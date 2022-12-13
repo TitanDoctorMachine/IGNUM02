@@ -8,7 +8,7 @@ class PARAMS{
 
       String GetUser() {return "yourusercomeshere";}
       
-};rffeff
+};
 
 
 #endif
