@@ -6,7 +6,6 @@
 #include <FS.h>
 #include "Base64.h"
 #include <ESP8266WiFi.h>
-#include "PARAMS.h"
 
 
 /*
@@ -19,7 +18,7 @@
 */
 
 SHA256 sha256, userhash;
-PARAMS PARAMS;
+PARAMS PARAMS2;
 
 bool ValidCommand = 0, configmode = 0;
 int last_User, last_Root_user;
@@ -149,14 +148,14 @@ String NewChallenge() { //GENERATE NEW CHALLENGE
   STRKeyChallenge = internalSTRKeyChallenge; 
 
   ValidToken = HashIt256(STRKeyChallenge + UserHash);
-
+/*
   Serial.print("User: ");//DEBUG
   Serial.println(SYSTEM_KEY);//DEBUG
   Serial.print("UserHash: ");//DEBUG
   Serial.println(UserHash);//DEBUG
   Serial.print("UserToken: ");//DEBUG
   Serial.println(ValidToken);//DEBUG
-
+*/
   return internalSTRKeyChallenge;  
 
 }
@@ -172,10 +171,10 @@ String IGNUM::begin(String reboot){
   if(reboot != "reboot"){  
   reload();
   }
-  SYSTEM_KEY = PARAMS.GetUser();
+  SYSTEM_KEY = PARAMS2.GetUser();
   UserHash = HashIt256(SYSTEM_KEY);
   NewChallenge(); 
-  return "starting";
+  return "started";
         
 }
 
@@ -237,6 +236,17 @@ bool IGNUM::InputCyphercode(String CypherCode){
     }
   }
 }
+
+String IGNUM::GenIgnumCommand(String Chlg, String Command){
+    
+    String EXTToken = HashIt256(Chlg + UserHash);
+    String PlainCommand = EXTToken + "//" + Command; 
+    return "IG01" + encrypt(PlainCommand, EXTToken, Chlg); //InitVector = Challenge
+}
+
+
+
+
 
 //COMMANDS TO LOAD VALUES FROM COMMANDS
 void IGNUM::EndRxCommand(){ ///put in ignum reload;
