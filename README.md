@@ -12,7 +12,6 @@ light version of ignum01
 /*
         #ifndef PARAMS_H
         #define PARAMS_H
-
         #include <Arduino.h>
 
         class PARAMS{
